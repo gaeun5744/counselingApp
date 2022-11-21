@@ -44,4 +44,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     implementation "androidx.activity:activity-ktx:1.4.0"
     implementation 'com.google.firebase:firebase-analytics'
+    implementation platform('com.google.firebase:firebase-bom:29.1.0')
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
 }
