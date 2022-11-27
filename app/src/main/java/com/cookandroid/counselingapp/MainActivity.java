@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -64,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
                     String url="http://211.243.154.156:5979/chatbot";
                     NetworkTask networkTask = new NetworkTask(url, msg);
                     networkTask.execute();
-                    myRef.push().setValue(chat);
 
+                    myRef.push().setValue(chat);
                     chatText.setText("");
                 }
 
@@ -137,7 +138,24 @@ public class MainActivity extends AppCompatActivity {
             return result;
         }
 
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            Chat chat = new Chat();
+            chat.setName("챗봇");
+            GetJSON getJSON = new GetJSON();
+            String result = getJSON.getJsonData(s);
+            chat.setMsg(result);
+
+            myRef.push().setValue(chat);
+
+
+
+        }
     }
+
+
 
 
 }
