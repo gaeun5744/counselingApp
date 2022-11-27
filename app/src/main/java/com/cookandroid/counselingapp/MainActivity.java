@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentValues;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.annotations.Nullable;
 
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<Chat> chatList;
-    private String nickname = "익명1";
+    private String nickname = "익명2";
 
     private EditText chatText;
     private Button sendButton;
@@ -41,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         chatText = findViewById(R.id.chatText);
         sendButton = findViewById(R.id.sendButton);
 
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
                     chat.setMsg(msg);
 
                     //메시지를 파이어베이스에 보냄.
+                    // AsyncTask를 통해 HttpURLConnection 수행.
+                    String url="http://211.243.154.156:5979/chatbot";
+                    NetworkTask networkTask = new NetworkTask(url, msg);
+                    networkTask.execute();
                     myRef.push().setValue(chat);
 
                     chatText.setText("");
@@ -103,6 +114,29 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public class NetworkTask extends AsyncTask<Void, Void, String> {
+
+        private String url;
+        private String values;
+
+        public NetworkTask(String url, String values) {
+
+            this.url = url;
+            this.values = values;
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            String result; // 요청 결과를 저장할 변수.
+            HttpConnection requestHttpURLConnection = new HttpConnection();
+            result = requestHttpURLConnection.POSTFunction(url, values); // 해당 URL로 부터 결과물을 얻어온다.
+            Log.d("MainActivity","응답"+result);
+            return result;
+        }
+
     }
 
 
