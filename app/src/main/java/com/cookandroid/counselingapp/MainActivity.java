@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference myRef;
 
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
                     networkTask.execute();
 
                     myRef.push().setValue(chat);
+
+                    recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+
                     chatText.setText("");
                 }
 
@@ -149,11 +154,12 @@ public class MainActivity extends AppCompatActivity {
             chat.setMsg(result);
 
             myRef.push().setValue(chat);
-
+            recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
 
 
         }
     }
+
 
 
 

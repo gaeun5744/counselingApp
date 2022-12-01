@@ -5,11 +5,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -33,14 +36,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         public TextView nameText;
         public TextView msgText;
         public LinearLayout msgLinear;
+        public ImageView profile;
 
         public View rootView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            nameText = itemView.findViewById(R.id.nameText);
-            msgText = itemView.findViewById(R.id.msgText);
+            profile = itemView.findViewById(R.id.profile);
+            nameText = itemView.findViewById(R.id.chatBot);
+            msgText = itemView.findViewById(R.id.chatBot_message);
             msgLinear = itemView.findViewById(R.id.msgLinear);
 
             rootView = itemView;
@@ -56,8 +61,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
     public ChatAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         //inflation 과정
-        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.msg_item,parent,false);
-
+        LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message,parent,false);
         MyViewHolder myViewHolder = new MyViewHolder(linearLayout);
 
         return myViewHolder;
@@ -70,13 +74,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
 
         Chat chat = chatList.get(position);
 
+
         holder.nameText.setText(chat.getName());
         holder.msgText.setText(chat.getMsg());
 
         if(chat.getName().equals(this.name)){
             //사용자가 저장된 이름과 같을 시 오른쪽으로 정렬
-            holder.nameText.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            holder.nameText.setVisibility(View.GONE);
             holder.msgText.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            holder.profile.setVisibility(View.GONE);
+
 
             holder.msgLinear.setGravity(Gravity.RIGHT);
         } else {
