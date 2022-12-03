@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -154,7 +155,13 @@ public class MainActivity extends AppCompatActivity {
             chat.setMsg(result);
 
             myRef.push().setValue(chat);
-            recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                }
+            }, 200);
 
 
         }
