@@ -20,7 +20,7 @@ import com.cookandroid.counselingapp.Chat;
 
 import java.util.List;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> {
+public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Chat> chatList;
     private String name;
@@ -32,7 +32,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         this.name = name;
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class chatBotViewHolder extends RecyclerView.ViewHolder{
         public TextView nameText;
         public TextView msgText;
         public LinearLayout msgLinear;
@@ -40,7 +40,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
 
         public View rootView;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public chatBotViewHolder(@NonNull View itemView) {
             super(itemView);
 
             profile = itemView.findViewById(R.id.profile);
@@ -55,11 +55,37 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         }
     }
 
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
+        public TextView user_message;
+        public LinearLayout my_msgLinear;
+
+        public View rootView;
+
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            user_message= itemView.findViewById(R.id.user_message);
+            my_msgLinear=itemView.findViewById(R.id.my_msgLinear);
+            rootView = itemView;
+
+            itemView.setEnabled(true);
+            itemView.setClickable(true);
+        }
+    }
+
 
     @NonNull
     @Override
-    public ChatAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        switch (viewType){
+            case 0:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.msg_item,parent,false);
+                return new MyViewHolder(view);
+            case 1:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message,parent,false);
+                return new chatBotViewHolder(view);
+        }
         //inflation 과정
         LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message,parent,false);
         MyViewHolder myViewHolder = new MyViewHolder(linearLayout);
@@ -67,34 +93,46 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         return myViewHolder;
     }
 
-    //각 뷰의 기능 설정
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+
     @Override
-    public void onBindViewHolder(@NonNull ChatAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull  RecyclerView.ViewHolder holder, int position) {
 
         Chat chat = chatList.get(position);
 
 
-        holder.nameText.setText(chat.getName());
-        holder.msgText.setText(chat.getMsg());
-
         if(chat.getName().equals(this.name)){
+            MyViewHolder myHoler = (MyViewHolder) holder;
             //사용자가 저장된 이름과 같을 시 오른쪽으로 정렬
-            holder.nameText.setVisibility(View.GONE);
-            holder.msgText.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
-            holder.profile.setVisibility(View.GONE);
+            myHoler.user_message.setText(chat.getMsg());
+            myHoler.user_message.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            myHoler.user_message.setGravity(Gravity.RIGHT);
 
 
-            holder.msgLinear.setGravity(Gravity.RIGHT);
+
+            myHoler.my_msgLinear.setGravity(Gravity.RIGHT);
         } else {
+            chatBotViewHolder chatHolder = (chatBotViewHolder) holder;
+            chatHolder.nameText.setText(chat.getName());
+            chatHolder.msgText.setText(chat.getMsg());
             //아닐 시 왼쪽 정렬
-            holder.nameText.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
-            holder.msgText.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            chatHolder.nameText.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            chatHolder.msgText.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
 
-            holder.msgLinear.setGravity(Gravity.LEFT);
+            chatHolder.msgLinear.setGravity(Gravity.LEFT);
         }
 
 
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Chat chat = chatList.get(position);
+
+        if (chat.getName().equals(this.name)) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 
     //메시지아이템 갯수세기
